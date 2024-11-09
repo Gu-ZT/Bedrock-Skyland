@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(NaturalSpawner.class)
 @Debug(export = true, print = true)
-public class NaturalSpawnerMixin {
+abstract class NaturalSpawnerMixin {
     @ModifyConstant(method = "isRightDistanceToPlayerAndSpawnPoint", constant = @Constant(doubleValue = 24.0))
     private static double injectedD(double value) {
         return 4.0;

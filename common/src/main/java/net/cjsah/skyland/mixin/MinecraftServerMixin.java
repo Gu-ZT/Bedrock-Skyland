@@ -1,5 +1,6 @@
 package net.cjsah.skyland.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.cjsah.skyland.Skyland;
 import net.cjsah.skyland.generator.SkylandChunkGenerator;
 import net.cjsah.skyland.init.ModConfiguredFeatures;
@@ -22,10 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(value = MinecraftServer.class)
-public class MinecraftServerMixin {
+abstract class MinecraftServerMixin {
     @Inject(
         method = "setInitialSpawn",
-        locals = LocalCapture.CAPTURE_FAILHARD,
         at =
         @At(
             value = "INVOKE",
@@ -41,9 +41,8 @@ public class MinecraftServerMixin {
         boolean bonusChest,
         boolean debugWorld,
         CallbackInfo ci,
-        ServerChunkCache serverChunkManager,
-        ChunkPos spawnChunk,
-        int spawnHeight
+        @Local ChunkPos spawnChunk,
+        @Local int spawnHeight
     ) {
         ServerChunkCache chunkManager = level.getChunkSource();
         ChunkGenerator chunkGenerator = chunkManager.getGenerator();

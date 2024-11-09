@@ -16,7 +16,7 @@ public class SpawnPlatformFeature extends Feature<SpawnPlatformFeatureConfigurat
     @Override
     public boolean place(@NotNull FeaturePlaceContext<SpawnPlatformFeatureConfiguration> context) {
         SpawnPlatformFeatureConfiguration config = context.config();
-        BlockPos origin = config.spawnRelative() ? context.origin().atY(0) : BlockPos.ZERO;
+        BlockPos origin = new BlockPos(8, 0, 8);
         return ModFeatures.LOCATABLE_STRUCTURE.place(config.platformConfig(), context.level(), context.chunkGenerator(), context.random(), origin);
     }
 }

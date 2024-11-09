@@ -4,6 +4,7 @@
   "package": "net.cjsah.skyland.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "AmethystPickaxeItemMixin",
     "BambooSaplingBlockMixin",
     "BambooStalkBlockMixin",
     "ChunkGeneratorAccessor",
@@ -19,7 +20,9 @@
     "integration.anvilcraft.AnvilCraft_HoeItemMixin"
   ],
   "client": [
-    "WorldOpenFlowsMixin"
+    "WorldOpenFlowsMixin",
+    "bedrockminer.AnvilCraft_MinecraftMixin",
+    "bedrockminer.AnvilCraft_MultiPlayerGameModeMixin"
   ],
   "plugin": "net.cjsah.skyland.mixin.plugin.SkylandMixinPlugin",
   "injectors": {

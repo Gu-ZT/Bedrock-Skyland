@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(WorldOpenFlows.class)
-public class WorldOpenFlowsMixin {
+abstract class WorldOpenFlowsMixin {
     @ModifyVariable(
         method = "doLoadLevel",
         at = @At("HEAD"),

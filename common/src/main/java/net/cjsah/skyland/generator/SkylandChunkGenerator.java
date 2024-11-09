@@ -63,7 +63,7 @@ public class SkylandChunkGenerator extends ChunkGenerator {
             NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter((generator) -> generator.settings)
         ).apply(instance, instance.stable(SkylandChunkGenerator::new))
     );
-    private static final BlockState AIR = Blocks.AIR.defaultBlockState();
+    private static final BlockState BEDROCK = Blocks.BEDROCK.defaultBlockState();
 
     private final Holder<NoiseGeneratorSettings> settings;
     private final Aquifer.FluidPicker globalFluidPicker;
@@ -71,8 +71,8 @@ public class SkylandChunkGenerator extends ChunkGenerator {
     public SkylandChunkGenerator(BiomeSource biomeSource, Holder<NoiseGeneratorSettings> settings) {
         super(biomeSource);
         this.settings = settings;
-        Aquifer.FluidStatus air = new Aquifer.FluidStatus(0, AIR);
-        this.globalFluidPicker = (x, y, z) -> air;
+        Aquifer.FluidStatus bedRock = new Aquifer.FluidStatus(0, BEDROCK);
+        this.globalFluidPicker = (x, y, z) -> bedRock;
     }
 
     public Holder<NoiseGeneratorSettings> getSettings() {
@@ -138,19 +138,33 @@ public class SkylandChunkGenerator extends ChunkGenerator {
     @Override
     public @NotNull CompletableFuture<ChunkAccess> fillFromNoise(
         @NotNull Executor executor, @NotNull Blender blender, @NotNull RandomState random,
-        @NotNull StructureManager structureManager, @NotNull ChunkAccess chunk
+        @NotNull StructureManager structureManager, @NotNull ChunkAccess chunkAccess
     ) {
-        return CompletableFuture.completedFuture(chunk);
+        BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+        Heightmap heightmap = chunkAccess.getOrCreateHeightmapUnprimed(Heightmap.Types.OCEAN_FLOOR_WG);
+        Heightmap heightmap2 = chunkAccess.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
+        for (int i = 0; i < chunkAccess.getHeight(); ++i) {
+            int j = chunkAccess.getMinBuildHeight() + i;
+            for (int k = 0; k < 16; ++k) {
+                for (int l = 0; l < 16; ++l) {
+                    BlockState state = BEDROCK;
+                    chunkAccess.setBlockState(mutableBlockPos.set(k, j, l), state, false);
+                    heightmap.update(k, j, l, state);
+                    heightmap2.update(k, j, l, state);
+                }
+            }
+        }
+        return CompletableFuture.completedFuture(chunkAccess);
     }
 
     @Override
-    public void applyBiomeDecoration(WorldGenLevel level, ChunkAccess chunkAccess, StructureManager structureManager) {
+    public void applyBiomeDecoration(@NotNull WorldGenLevel level, @NotNull ChunkAccess chunkAccess, @NotNull StructureManager structureManager) {
         ChunkPos chunkPos = chunkAccess.getPos();
         SectionPos sectionPos = SectionPos.of(chunkPos, level.getMinSection());
         BlockPos blockPos = sectionPos.origin();
         Registry<Structure> structureRegistry = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
         Map<Integer, List<Structure>> stepMap = structureRegistry.stream().collect(Collectors.groupingBy(structure -> structure.step().ordinal()));
-        List<FeatureSorter.StepFeatureData> steps = ((ChunkGeneratorAccessor)this).getFeaturesPerStep().get();
+        List<FeatureSorter.StepFeatureData> steps = ((ChunkGeneratorAccessor) this).getFeaturesPerStep().get();
         WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.generateUniqueSeed()));
         long seed = random.setDecorationSeed(level.getSeed(), blockPos.getX(), blockPos.getZ());
         Set<Holder<Biome>> biomes = new ObjectArraySet<>();
@@ -196,7 +210,7 @@ public class SkylandChunkGenerator extends ChunkGenerator {
                 if (step >= featureSize) continue;
                 IntArraySet intSet = new IntArraySet();
                 for (Holder<Biome> holder : biomes) {
-                    List<HolderSet<PlacedFeature>> featuresSet = ((ChunkGeneratorAccessor)this).getGenerationSettingsGetter().apply(holder).features();
+                    List<HolderSet<PlacedFeature>> featuresSet = ((ChunkGeneratorAccessor) this).getGenerationSettingsGetter().apply(holder).features();
                     if (step >= featuresSet.size()) continue;
                     HolderSet<PlacedFeature> feature = featuresSet.get(step);
                     FeatureSorter.StepFeatureData featureData = steps.get(step);
@@ -241,7 +255,8 @@ public class SkylandChunkGenerator extends ChunkGenerator {
     public void buildSurface(
         @NotNull WorldGenRegion level, @NotNull StructureManager structureManager, @NotNull RandomState random,
         @NotNull ChunkAccess chunk
-    ) {}
+    ) {
+    }
 
     @Override
     public void applyCarvers(

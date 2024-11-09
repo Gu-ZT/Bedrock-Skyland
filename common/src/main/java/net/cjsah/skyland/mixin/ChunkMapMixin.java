@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ChunkMap.class)
-public class ChunkMapMixin {
+abstract class ChunkMapMixin {
 
     @Shadow
     private ChunkGenerator generator;

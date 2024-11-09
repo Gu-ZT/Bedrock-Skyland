@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(BambooStalkBlock.class)
-public class BambooStalkBlockMixin {
+abstract class BambooStalkBlockMixin {
     @Redirect(method = "performBonemeal", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;isEmptyBlock(Lnet/minecraft/core/BlockPos;)Z", opcode = Opcodes.GETFIELD))
     private boolean isEmptyBlock(ServerLevel level, BlockPos blockPos) {
         return level.getBlockState(blockPos).equals(Blocks.AIR.defaultBlockState()) || level.getBlockState(blockPos).equals(Blocks.BEDROCK.defaultBlockState());

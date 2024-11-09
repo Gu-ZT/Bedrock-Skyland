@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChunkGenerators.class)
-public class RegisterChunkGeneratorMixin {
+abstract class RegisterChunkGeneratorMixin {
     @Inject(method = "bootstrap", at = @At("HEAD"))
     private static void register(Registry<Codec<? extends ChunkGenerator>> registry, CallbackInfoReturnable<Codec<? extends ChunkGenerator>> cir) {
         Registry.register(registry, Skyland.SKYLAND_ID, SkylandChunkGenerator.CODEC);

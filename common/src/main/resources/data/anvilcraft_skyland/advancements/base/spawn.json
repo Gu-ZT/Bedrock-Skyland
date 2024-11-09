@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "join": {
+      "conditions": {},
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "join"
+    ]
+  ],
+  "rewards": {
+    "function": "anvilcraft_skyland:spawn"
+  },
+  "sends_telemetry_event": true
+}

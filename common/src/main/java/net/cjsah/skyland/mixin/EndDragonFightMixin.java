@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(EndDragonFight.class)
-public class EndDragonFightMixin {
+abstract class EndDragonFightMixin {
 
     @Redirect(method = "spawnExitPortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;getHeightmapPos(Lnet/minecraft/world/level/levelgen/Heightmap$Types;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/core/BlockPos;"))
     private BlockPos changeEndPortalPos(ServerLevel instance, Heightmap.Types types, BlockPos blockPos) {
